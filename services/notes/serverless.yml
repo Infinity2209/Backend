@@ -31,19 +31,19 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
+      Resource: 
+        - "arn:aws:dynamodb:us-east-1:390402548293:table/notes" # Restrict to the specific DynamoDB table
+    - Effect: Allow
+      Action:
         - s3:PutObject
         - s3:GetObject
       Resource: 
-        - "arn:aws:dynamodb:us-east-1:*:*"
-        - "arn:aws:s3:::notes-app2-uploads/*" 
+        - "arn:aws:s3:::notes-app2-uploads/*" # Correctly scoped for your S3 bucket
 
 custom:
-  s3:
-    deploymentBucket: your-custom-deployment-bucket-name  # Add your custom bucket name here
-
   esbuild:
     bundle: true
-    minify: false
+    minify: true # Enable minification for production
     sourcemap: true
     exclude: ['aws-sdk']
 
@@ -90,4 +90,4 @@ functions:
           authorizer: aws_iam
 
 resources:
-  - ${file(resources/api-gateway-errors.yml)}
+  - ${file(resources/api-gateway-errors.yml)} # Ensure this file exists and is correctly referenced

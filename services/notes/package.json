@@ -23,6 +23,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "notes-api": "file:",
     "uuid": "^7.0.3"
   }
 }
