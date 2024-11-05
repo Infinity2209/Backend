@@ -20,7 +20,7 @@ provider:
   region: us-east-1
   environment:
     tableName: notes
-    uploadBucket: notes-app2-uploads
+    # uploadBucket: notes-app2-uploads
   iamRoleStatements:
     - Effect: Allow
       Action:
