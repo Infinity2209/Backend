@@ -1,38 +1,46 @@
 service: notes-api
+frameworkVersion: "3"
 
-package:
-  individually: true
+useDotenv: true
 
 plugins:
-  - serverless-bundle
-  - serverless-offline
+  - serverless-esbuild
   - serverless-dotenv-plugin
+
+package:
+  excludeDevDependencies: false
+  individually: true
 
 provider:
   name: aws
-  runtime: nodejs18.x
-  stage: dev  # Change to 'prod' for production deployment
+  runtime: nodejs16.x
+  lambdaHashingVersion: "20201221"
   region: us-east-1
+  stage: dev
   environment:
-    tableName: notes  # Environment variable for DynamoDB table name
-    uploadBucket: keeper-app-uploads  # S3 bucket name
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:Scan
-        - dynamodb:Query
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-        - dynamodb:DescribeTable
-      Resource: "arn:aws:dynamodb:us-east-1:390402548293:table/notes"  # Specific ARN for notes table
-    - Effect: Allow
-      Action:
-        - s3:PutObject
-        - s3:GetObject
-        - s3:DeleteObject
-      Resource: "arn:aws:s3:::keeper-app-uploads/*"  # S3 bucket resources
+    tableName: ${env:tableName}
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "s3:*"
+            - "ses:*"
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - "dynamodb:*"
+          Resource: "*"
+
+custom:
+  esbuild:
+    packager: 'yarn'
+  splitStacks:
+    perFunction: false
+    perType: false
+    perGroupFunction: true
+    nestedStackCount: 10
 
 functions:
   create:
